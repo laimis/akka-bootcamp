@@ -18,6 +18,8 @@ namespace ChartApp
         [STAThread]
         static void Main()
         {
+			Console.WriteLine("Exit");
+			
             ChartActors = ActorSystem.Create("ChartActors");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
