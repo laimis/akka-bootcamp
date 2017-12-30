@@ -29,29 +29,25 @@ namespace WinTail
 		private static IActorRef CreateReader()
 		{
 			var consoleReaderProps = Props.Create<ConsoleReaderActor>();
-			var consoleReaderActor = MyActorSystem.ActorOf(consoleReaderProps, "reader");
-			return consoleReaderActor;
+			return MyActorSystem.ActorOf(consoleReaderProps, "reader");
 		}
 
 		private static IActorRef CreateFileValidator(IActorRef consoleWriterActor)
 		{
 			var validationActorProps = Props.Create<FileValidatorActor>(consoleWriterActor);
-			var validationActor = MyActorSystem.ActorOf(validationActorProps, "validation");
-			return validationActor;
+			return MyActorSystem.ActorOf(validationActorProps, "validation");
 		}
 
 		private static IActorRef CreateTailCoordinator()
 		{
 			var tailCoordinatorProps = Props.Create<TailCoordinatorActor>();
-			var tailCoordinatorActor = MyActorSystem.ActorOf(tailCoordinatorProps, "tailcoordinator");
-			return tailCoordinatorActor;
+			return MyActorSystem.ActorOf(tailCoordinatorProps, "tailcoordinator");
 		}
 
 		private static IActorRef CreateConsoleWriter()
 		{
 			var consoleWriterProps = Props.Create<ConsoleWriterActor>();
-			var consoleWriterActor = MyActorSystem.ActorOf(consoleWriterProps, "writer");
-			return consoleWriterActor;
+			return MyActorSystem.ActorOf(consoleWriterProps, "writer");
 		}
 	}
     #endregion
