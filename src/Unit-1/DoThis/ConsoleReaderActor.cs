@@ -10,6 +10,8 @@ namespace WinTail
     class ConsoleReaderActor : UntypedActor
     {
         public const string ExitCommand = "exit";
+		public const string StartCommand = "start";
+
         private IActorRef _consoleWriterActor;
 
         public ConsoleReaderActor(IActorRef consoleWriterActor)
@@ -19,22 +21,65 @@ namespace WinTail
 
         protected override void OnReceive(object message)
         {
+			if (StartCommand.Equals(message))
+			{
+				DoPrintInstructions();
+			}
+			else if(message is Messages.InputError)
+			{
+				_consoleWriterActor.Tell(message as Messages.InputError);
+			}
+
+			GetAndValidateInput();
+        }
+
+		private void GetAndValidateInput()
+		{
 			var read = Console.ReadLine();
-			if (!string.IsNullOrEmpty(read) && String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
+			if (string.IsNullOrEmpty(read))
+			{
+				Self.Tell(new Messages.InputError("No input received"));
+			}
+			else if (String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
 			{
 				// shut down the system (acquire handle to system via
 				// this actors context)
 				Context.System.Terminate();
-				return;
 			}
+			else
+			{
+				var valid = IsValid(read);
+				if (valid)
+				{
+					_consoleWriterActor.Tell(
+						new Messages.InputSuccess("Thank you! Message was valid.")
+					);
 
-			// send input to the console writer to process and print
-			// YOU NEED TO FILL IN HERE
-			_consoleWriterActor.Tell(read);
+					// continue reading messages from console
+					Self.Tell(new Messages.ContinueProcessing());
+				}
+				else
+				{
+					var err = new Messages.ValidationError(
+						"Invalid: input had odd number of characters."
+					);
 
-			// continue reading messages from the console
-			Self.Tell("continue");
-        }
+					Self.Tell(err);
+				}
+			}
+		}
 
+		private static bool IsValid(string message)
+		{
+			var valid = message.Length % 2 == 0;
+			return valid;
+		}
+
+		private static void DoPrintInstructions()
+		{
+			Console.WriteLine("Write whatever you want into the console!");
+			Console.WriteLine("Some entries will pass validation, and some won't.");
+			Console.WriteLine("Type 'exit' to quit this application at any time.\n");
+		}
     }
 }
