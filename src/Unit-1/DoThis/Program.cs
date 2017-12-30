@@ -16,9 +16,9 @@ namespace WinTail
 
 			var tailCoordinatorActor = CreateTailCoordinator();
 
-			var validationActor = CreateFileValidator(consoleWriterActor, tailCoordinatorActor);
+			var validationActor = CreateFileValidator(consoleWriterActor);
 
-			var consoleReaderActor = CreateReader(validationActor);
+			var consoleReaderActor = CreateReader();
 
 			consoleReaderActor.Tell(ConsoleReaderActor.StartCommand);
 
@@ -26,16 +26,16 @@ namespace WinTail
 			MyActorSystem.WhenTerminated.Wait();
 		}
 
-		private static IActorRef CreateReader(IActorRef validationActor)
+		private static IActorRef CreateReader()
 		{
-			var consoleReaderProps = Props.Create<ConsoleReaderActor>(validationActor);
+			var consoleReaderProps = Props.Create<ConsoleReaderActor>();
 			var consoleReaderActor = MyActorSystem.ActorOf(consoleReaderProps, "reader");
 			return consoleReaderActor;
 		}
 
-		private static IActorRef CreateFileValidator(IActorRef consoleWriterActor, IActorRef tailCoordinatorActor)
+		private static IActorRef CreateFileValidator(IActorRef consoleWriterActor)
 		{
-			var validationActorProps = Props.Create<FileValidatorActor>(consoleWriterActor, tailCoordinatorActor);
+			var validationActorProps = Props.Create<FileValidatorActor>(consoleWriterActor);
 			var validationActor = MyActorSystem.ActorOf(validationActorProps, "validation");
 			return validationActor;
 		}
