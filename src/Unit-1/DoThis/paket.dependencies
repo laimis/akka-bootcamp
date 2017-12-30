@@ -1,0 +1,4 @@
+source https://www.nuget.org/api/v2
+nuget Akka framework: 4.7
+nuget Newtonsoft.Json framework: 4.7
+nuget System.Collections.Immutable framework: 4.7
