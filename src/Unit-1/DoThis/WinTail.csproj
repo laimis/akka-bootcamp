@@ -57,7 +57,11 @@
     <Compile Include="ConsoleReaderActor.cs" />
     <Compile Include="ConsoleWriterActor.cs" />
 	<Compile Include="Messages.cs" />
+	<Compile Include="FileObserver.cs" />
 	<Compile Include="ValidationActor.cs" />
+	<Compile Include="FileValidatorActor.cs" />
+	<Compile Include="TailCoordinatorActor.cs" />
+	<Compile Include="TailActor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

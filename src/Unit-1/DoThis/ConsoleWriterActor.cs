@@ -27,7 +27,6 @@ namespace WinTail
 			}
 			else
 			{
-				Console.WriteLine("ELSE ELSE " + message);
 				Console.WriteLine(message);
 			}
         }
