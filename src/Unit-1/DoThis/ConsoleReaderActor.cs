@@ -11,12 +11,11 @@ namespace WinTail
     {
         public const string ExitCommand = "exit";
 		public const string StartCommand = "start";
+        private IActorRef _validationActor;
 
-        private IActorRef _consoleWriterActor;
-
-        public ConsoleReaderActor(IActorRef consoleWriterActor)
+        public ConsoleReaderActor(IActorRef validationActor)
         {
-            _consoleWriterActor = consoleWriterActor;
+            _validationActor = validationActor;
         }
 
         protected override void OnReceive(object message)
@@ -25,55 +24,19 @@ namespace WinTail
 			{
 				DoPrintInstructions();
 			}
-			else if(message is Messages.InputError)
-			{
-				_consoleWriterActor.Tell(message as Messages.InputError);
-			}
-
-			GetAndValidateInput();
-        }
-
-		private void GetAndValidateInput()
-		{
+			
 			var read = Console.ReadLine();
-			if (string.IsNullOrEmpty(read))
-			{
-				Self.Tell(new Messages.InputError("No input received"));
-			}
-			else if (String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
+			
+			if (String.Equals(read, ExitCommand, StringComparison.OrdinalIgnoreCase))
 			{
 				// shut down the system (acquire handle to system via
 				// this actors context)
 				Context.System.Terminate();
+				return;
 			}
-			else
-			{
-				var valid = IsValid(read);
-				if (valid)
-				{
-					_consoleWriterActor.Tell(
-						new Messages.InputSuccess("Thank you! Message was valid.")
-					);
-
-					// continue reading messages from console
-					Self.Tell(new Messages.ContinueProcessing());
-				}
-				else
-				{
-					var err = new Messages.ValidationError(
-						"Invalid: input had odd number of characters."
-					);
-
-					Self.Tell(err);
-				}
-			}
-		}
-
-		private static bool IsValid(string message)
-		{
-			var valid = message.Length % 2 == 0;
-			return valid;
-		}
+			
+			_validationActor.Tell(read);
+        }
 
 		private static void DoPrintInstructions()
 		{
