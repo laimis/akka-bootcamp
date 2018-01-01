@@ -182,3 +182,4 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+src/Unit-3/DoThis/.vscode/DO_NOT_CHECK_IN.txt
