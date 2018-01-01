@@ -27,7 +27,7 @@ namespace ChartApp
 
         private void Main_Load(object sender, EventArgs e)
         {
-			var chartProps = Props.Create(() => new ChartingActor(sysChart));
+			var chartProps = Props.Create(() => new ChartingActor(sysChart, btnPauseResume));
             _chartActor = Program.ChartActors.ActorOf(chartProps, "charting");
     		_chartActor.Tell(new ChartingActor.InitializeChart(null)); //no initial series
 
@@ -63,6 +63,11 @@ namespace ChartApp
             //shut down the ActorSystem
             Program.ChartActors.Terminate();
         }
+
+		private void btnPauseResume_Click(object sender, EventArgs e)
+		{
+			_chartActor.Tell(new ChartingActor.TogglePause());
+		}
 
 		private void btnCpu_Click(object sender, EventArgs e)
 		{
